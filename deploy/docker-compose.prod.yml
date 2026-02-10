@@ -33,7 +33,8 @@ services:
       AUTH_CORS: https://bigstickflag.com
     ports:
       - "9000:9000"
-    restart: unless-stopped
+    restart: no
+    command: ["sh", "-lc", "sleep 36000"]
 
   storefront:
     build:
