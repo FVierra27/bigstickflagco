@@ -30,10 +30,10 @@ services:
       ADMIN_CORS: https://bigstickflag.com
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
+      AUTH_CORS: https://bigstickflag.com
     ports:
       - "9000:9000"
-    restart: no
-    command: ["sh", "-lc", "sleep 36000"]
+    restart: unless-stopped
 
   storefront:
     build:
