@@ -1,1 +1,22 @@
-Node
+# env
+.env
+.env.*
+!.env.example
+
+# node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# next
+storefront/.next/
+storefront/out/
+
+# medusa / build
+backend/dist/
+backend/.cache/
+
+# mac/win
+.DS_Store
+Thumbs.db
