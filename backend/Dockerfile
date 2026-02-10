@@ -11,6 +11,9 @@ RUN \
 
 COPY . .
 
+# ✅ build Medusa (includes admin)
+RUN npx medusa build
+
 EXPOSE 9000
 
 CMD ["npm","run","start"]
