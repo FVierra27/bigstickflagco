@@ -24,7 +24,7 @@ services:
       - redis
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgres://medusa:${POSTGRES_PASSWORD}@db:5432/medusa
+      DATABASE_URL: postgres://medusa:${POSTGRES_PASSWORD}@db:5432/medusa?sslmode=disable
       REDIS_URL: redis://redis:6379
       STORE_CORS: https://bigstickflag.com
       ADMIN_CORS: https://bigstickflag.com
