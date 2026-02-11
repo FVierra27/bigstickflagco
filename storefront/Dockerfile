@@ -1,24 +1,38 @@
+# ---------- deps ----------
 FROM node:20-alpine AS deps
 WORKDIR /app
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable && pnpm i --frozen-lockfile; \
-  else npm i; fi
 
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm run build
+COPY package.json package-lock.json* ./
+RUN if [ -f package-lock.json ]; then npm ci; else npm i; fi
 
-FROM node:20-alpine AS runner
+# ---------- build ----------
+FROM node:20-alpine AS build
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+# Build Next.js
+RUN npm run build
+
+# ---------- runtime ----------
+FROM node:20-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Copy the minimal standalone output
+# This requires next.config.js to use: output: "standalone"
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/public ./public
+
 EXPOSE 3000
-CMD ["npm","run","start"]
+CMD ["node", "server.js"]

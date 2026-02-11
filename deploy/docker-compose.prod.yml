@@ -11,14 +11,6 @@ services:
       - medusa_db:/var/lib/postgresql/data
     restart: unless-stopped
 
-  admin:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile.admin
-    restart: unless-stopped
-    ports:
-      - "9001:80"
-
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -32,27 +24,42 @@ services:
       - redis
     environment:
       NODE_ENV: production
+
+      # DB/Redis
       DATABASE_URL: postgres://medusa:${POSTGRES_PASSWORD}@db:5432/medusa?sslmode=disable
       REDIS_URL: redis://redis:6379
+
+      # CORS (set these to your real domains)
       STORE_CORS: https://bigstickflag.com
       ADMIN_CORS: https://admin.bigstickflag.com
       AUTH_CORS: https://admin.bigstickflag.com,https://bigstickflag.com
+
+      # Secrets (set in Portainer stack env or .env file in deploy/)
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
-      MEDUSA_DISABLE_ADMIN: "true"
     ports:
       - "9000:9000"
-    command: ["sh", "-lc", "npx medusa db:migrate && npx medusa db:sync-links && exec npx medusa start"]
     restart: unless-stopped
+    command: >
+      sh -lc "
+      npx medusa db:migrate &&
+      npx medusa db:sync-links &&
+      exec npx medusa start
+      "
 
   storefront:
     build:
       context: ../storefront
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: https://api.bigstickflag.com
+        NEXT_PUBLIC_BASE_URL: https://bigstickflag.com
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
     depends_on:
       - backend
     environment:
       NODE_ENV: production
+      # Public vars used by the Next.js storefront
       NEXT_PUBLIC_MEDUSA_BACKEND_URL: https://api.bigstickflag.com
       NEXT_PUBLIC_BASE_URL: https://bigstickflag.com
       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
