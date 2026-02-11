@@ -33,8 +33,18 @@ services:
       COOKIE_SECRET: ${COOKIE_SECRET}
     ports:
       - "9000:9000"
-    restart: no
-    command: command: ["sh", "-lc", "npx medusa db:setup && npx medusa start"]
+    restart: unless-stopped
+    command:
+      [
+        "sh",
+        "-lc",
+        "until nc -z db 5432; do echo 'waiting for postgres...'; sleep 2; done; npx medusa db:migrate && npx medusa db:sync-links && npx medusa start"
+      ]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9000/store/products"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   storefront:
     build:
