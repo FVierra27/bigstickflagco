@@ -42,13 +42,8 @@ services:
       MEDUSA_ADMIN_ENABLED: "false"
     ports:
       - "9000:9000"
+    command: ["sh", "-lc", "npx medusa db:migrate && npx medusa db:sync-links && exec npx medusa start"]
     restart: unless-stopped
-    command:
-      [
-        "sh",
-        "-lc",
-        "until nc -z db 5432; do echo 'waiting for postgres...'; sleep 2; done; npx medusa db:migrate && npx medusa db:sync-links && exec npx medusa start"
-      ]
 
   storefront:
     build:

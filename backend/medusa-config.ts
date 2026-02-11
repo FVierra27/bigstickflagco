@@ -5,18 +5,19 @@ loadEnv(process.env.NODE_ENV || "development", process.cwd())
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
-
-    // ✅ Fix: use real Redis when REDIS_URL is set
     redisUrl: process.env.REDIS_URL,
 
     http: {
       storeCors: process.env.STORE_CORS || "http://localhost:3000",
-      adminCors: process.env.ADMIN_CORS || "http://localhost:9000",
-      // ✅ Fix: don't hard-require AUTH_CORS. Default it.
-      authCors: process.env.AUTH_CORS || process.env.ADMIN_CORS || "http://localhost:9000",
-
+      adminCors: process.env.ADMIN_CORS || "http://localhost:9001",
+      authCors: process.env.AUTH_CORS || process.env.ADMIN_CORS || "http://localhost:9001",
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
+  },
+
+  // ✅ Critical: explicitly disable admin serving from the backend
+  admin: {
+    disable: true,
   },
 })
