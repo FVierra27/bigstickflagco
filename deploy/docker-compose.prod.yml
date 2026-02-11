@@ -12,12 +12,10 @@ services:
     restart: unless-stopped
 
   admin:
-    image: nginx:alpine
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.admin
     restart: unless-stopped
-    depends_on:
-      - backend
-    volumes:
-      - ./backend/.medusa/client:/usr/share/nginx/html:ro
     ports:
       - "9001:80"
 
@@ -37,15 +35,20 @@ services:
       DATABASE_URL: postgres://medusa:${POSTGRES_PASSWORD}@db:5432/medusa?sslmode=disable
       REDIS_URL: redis://redis:6379
       STORE_CORS: https://bigstickflag.com
-      ADMIN_CORS: https://bigstickflag.com
-      AUTH_CORS: https://bigstickflag.com
+      ADMIN_CORS: https://admin.bigstickflag.com
+      AUTH_CORS: https://admin.bigstickflag.com,https://bigstickflag.com
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
       MEDUSA_ADMIN_ENABLED: "false"
     ports:
       - "9000:9000"
-    restart: no
-    command: ["sh", "-lc", "sleep 36000"]
+    restart: unless-stopped
+    command:
+      [
+        "sh",
+        "-lc",
+        "until nc -z db 5432; do echo 'waiting for postgres...'; sleep 2; done; npx medusa db:migrate && npx medusa db:sync-links && exec npx medusa start"
+      ]
 
   storefront:
     build:
