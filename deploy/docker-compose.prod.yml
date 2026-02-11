@@ -34,7 +34,7 @@ services:
     ports:
       - "9000:9000"
     restart: no
-    command: command: ["sh", "-lc", "npx medusa db:setup && npx medusa start"]
+    command: ["sh", "-lc", "npx medusa db:setup && npx medusa start"]
 
   storefront:
     build:
