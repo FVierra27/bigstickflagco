@@ -54,7 +54,7 @@ services:
       args:
         NEXT_PUBLIC_MEDUSA_BACKEND_URL: https://api.bigstickflag.com
         NEXT_PUBLIC_BASE_URL: https://bigstickflag.com
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_build_placeholder}
     depends_on:
       - backend
     environment:
@@ -62,7 +62,7 @@ services:
       # Public vars used by the Next.js storefront
       NEXT_PUBLIC_MEDUSA_BACKEND_URL: https://api.bigstickflag.com
       NEXT_PUBLIC_BASE_URL: https://bigstickflag.com
-      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_build_placeholder}
     ports:
       - "3000:3000"
     restart: unless-stopped

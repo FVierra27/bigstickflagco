@@ -1,22 +1,70 @@
-# env
+#################################################
+# OS / Editor
+#################################################
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+#################################################
+# Logs
+#################################################
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+#################################################
+# Environment Files (CRITICAL)
+#################################################
 .env
 .env.*
 !.env.example
 
-# node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+deploy/.env
+backend/.env
+storefront/.env
 
-# next
+#################################################
+# Node / Package Manager
+#################################################
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+#################################################
+# Next.js
+#################################################
 storefront/.next/
 storefront/out/
 
-# medusa / build
+#################################################
+# Medusa
+#################################################
+backend/.medusa/
 backend/dist/
-backend/.cache/
+backend/build/
 
-# mac/win
-.DS_Store
-Thumbs.db
+#################################################
+# Docker
+#################################################
+docker-compose.override.yml
+*.tar
+
+#################################################
+# Test / Coverage
+#################################################
+coverage/
+*.lcov
+
+#################################################
+# Misc
+#################################################
+*.swp
+*.swo
