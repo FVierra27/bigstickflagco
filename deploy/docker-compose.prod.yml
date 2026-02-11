@@ -11,6 +11,16 @@ services:
       - medusa_db:/var/lib/postgresql/data
     restart: unless-stopped
 
+  admin:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+    volumes:
+      - ./backend/.medusa/client:/usr/share/nginx/html:ro
+    ports:
+      - "9001:80"
+
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -31,6 +41,7 @@ services:
       AUTH_CORS: https://bigstickflag.com
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
+      MEDUSA_ADMIN_ENABLED: "false"
     ports:
       - "9000:9000"
     restart: no
