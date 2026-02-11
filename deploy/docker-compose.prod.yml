@@ -55,6 +55,7 @@ services:
         NEXT_PUBLIC_MEDUSA_BACKEND_URL: https://api.bigstickflag.com
         NEXT_PUBLIC_BASE_URL: https://bigstickflag.com
         NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_build_placeholder}
+        SKIP_BUILD_STATIC_GENERATION: "true"
     depends_on:
       - backend
     environment:
