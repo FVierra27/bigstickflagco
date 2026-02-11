@@ -39,7 +39,7 @@ services:
       AUTH_CORS: https://admin.bigstickflag.com,https://bigstickflag.com
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
-      MEDUSA_ADMIN_ENABLED: "false"
+      MEDUSA_DISABLE_ADMIN: "true"
     ports:
       - "9000:9000"
     command: ["sh", "-lc", "npx medusa db:migrate && npx medusa db:sync-links && exec npx medusa start"]

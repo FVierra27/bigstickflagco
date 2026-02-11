@@ -6,18 +6,17 @@ module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
-
     http: {
-      storeCors: process.env.STORE_CORS || "http://localhost:3000",
-      adminCors: process.env.ADMIN_CORS || "http://localhost:9001",
-      authCors: process.env.AUTH_CORS || process.env.ADMIN_CORS || "http://localhost:9001",
+      storeCors: process.env.STORE_CORS!,
+      adminCors: process.env.ADMIN_CORS!,
+      authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
 
-  // ✅ Critical: explicitly disable admin serving from the backend
+  // ✅ backend can disable serving admin, but admin image can still build it
   admin: {
-    disable: true,
+    disable: process.env.MEDUSA_DISABLE_ADMIN === "true",
   },
 })
